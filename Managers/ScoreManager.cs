@@ -22,10 +22,10 @@ namespace CTMS.Managers
         /// <summary>
         /// 创建一个项目配置文件
         /// </summary>
-        /// <param name="Persons">人员配置文件</param>
         /// <exception cref="UnifyException"></exception>
-        public void CreateProject(string[] Persons)
+        public void CreateProject()
         {
+            string[] Persons = GetPersonConfig();
             List<string> Temp = new List<string>();
             foreach (string Data in Persons)
             {
@@ -36,19 +36,21 @@ namespace CTMS.Managers
         /// <summary>
         /// 检查项目配置文件是否格式正确
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
         /// <exception cref="UnifyException"></exception>
-        public void CheckFormat(string[] Project)
+        public void CheckFormat()
         {
+            string[] Project = GetProjectConfig();
+            string[] ProjectLineTemp;
             foreach (string Data in Project)
             {
-                if (Data == "None")
+                ProjectLineTemp = Data.Split(':');
+                if (ProjectLineTemp[1] == "None")
                 {
                     continue;
                 }
                 try
                 {
-                    Convert.ToInt32(Data.Split(':')[1]);
+                    Convert.ToInt32(ProjectLineTemp[1]);
                 }
                 catch (SystemException)
                 {
@@ -59,12 +61,12 @@ namespace CTMS.Managers
         /// <summary>
         /// 设置成绩
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
         /// <param name="Index">人员序号</param>
         /// <param name="Value">成绩字符串</param>
         /// <exception cref="UnifyException"></exception>
-        public void SetScore(string[] Project, int Index, string Value)
+        public void SetScore(int Index, string Value)
         {
+            string[] Project = GetProjectConfig();
             try
             {
                 Convert.ToInt32(Value);
@@ -81,11 +83,11 @@ namespace CTMS.Managers
         /// <summary>
         /// 获取平均分
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
         /// <returns>平均分字符串</returns>
         /// <exception cref="UnifyException"></exception>
-        public string GetAverageScore(string[] Project)
+        public string GetAverageScore()
         {
+            string[] Project = GetProjectConfig();
             float Sum = 0;
             int PersonSum = 0;
             string DataTemp;

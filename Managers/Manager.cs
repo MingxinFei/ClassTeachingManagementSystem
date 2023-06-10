@@ -1,5 +1,6 @@
 ﻿using CTMS.BaseClasses;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,7 @@ namespace CTMS.Managers
     {
         protected string ProjectFileName;
         protected string PersonsFileName;
+        private string[] ProjectInfo;
         protected bool IsDisposed;
         /// <summary>
         /// 构造函数
@@ -125,6 +127,7 @@ namespace CTMS.Managers
         /// <param name="Texts">项目配置文件数据</param>
         /// <exception cref="UnifyException"></exception>
         [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetProjectConfig(string[] Texts)
         {
             SetProjectConfig(Texts, ProjectFileName);
@@ -155,9 +158,32 @@ namespace CTMS.Managers
         /// <returns>项目配置文件数据</returns>
         /// <exception cref="UnifyException"></exception>
         [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string[] GetProjectConfig()
         {
             return GetProjectConfig(ProjectFileName);
+        }
+        /// <summary>
+        /// 生成给用户显示的项目信息
+        /// </summary>
+        /// <param name="Project">项目配置文件数据</param>
+        /// <param name="IsRespawn">是否重新生成</param>
+        /// <returns>给用户显示的项目信息</returns>
+        public string[] GenerateProjectInfo(bool IsRespawn = false)
+        {
+            if (IsRespawn || ProjectInfo == null)
+            {
+                string[] Project = GetProjectConfig();
+                List<string> ProjectDataTemp = new List<string>();
+                string[] ProjectLineTemp;
+                for (int Index = 0; Index < Project.Length; Index++)
+                {
+                    ProjectLineTemp = Project[Index].Split(':');
+                    ProjectDataTemp.Add($"序号{Index}：{ProjectLineTemp[0]}：{ProjectLineTemp[1]}");
+                }
+                ProjectInfo = ProjectDataTemp.ToArray();
+            }
+            return ProjectInfo;
         }
     }
 }

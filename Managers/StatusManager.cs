@@ -22,10 +22,10 @@ namespace CTMS.Managers
         /// <summary>
         /// 创建一个项目配置文件
         /// </summary>
-        /// <param name="Persons">人员配置文件</param>
         /// <exception cref="UnifyException"></exception>
-        public void CreateProject(string[] Persons)
+        public void CreateProject()
         {
+            string[] Persons = GetPersonConfig();
             List<string> Temp = new List<string>();
             foreach (string Data in Persons)
             {
@@ -36,10 +36,10 @@ namespace CTMS.Managers
         /// <summary>
         /// 检查项目配置文件是否格式正确
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
         /// <exception cref="UnifyException"></exception>
-        public void CheckFormat(string[] Project)
+        public void CheckFormat()
         {
+            string[] Project = GetProjectConfig();
             string Temp;
             foreach (string Data in Project)
             {
@@ -53,12 +53,12 @@ namespace CTMS.Managers
         /// <summary>
         /// 设置状态
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
         /// <param name="Index">人员序号</param>
         /// <param name="Value">状态</param>
         /// <exception cref="UnifyException"></exception>
-        public void SetStatus(string[] Project, int Index, bool Value)
+        public void SetStatus(int Index, bool Value)
         {
+            string[] Project = GetProjectConfig();
             string[] ProjectDataTemp = Project[Index].Split(':');
             if (Value)
             {
@@ -74,10 +74,10 @@ namespace CTMS.Managers
         /// <summary>
         /// 获取合格率
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
         /// <returns>合格率字符串</returns>
-        public string GetQualifiedRate(string[] Project)
+        public string GetQualifiedRate()
         {
+            string[] Project = GetProjectConfig();
             int Count = 0;
             foreach (string Data in Project)
             {

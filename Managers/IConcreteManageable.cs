@@ -11,12 +11,10 @@ namespace CTMS.Managers
         /// <summary>
         /// 创建一个项目配置文件
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
-        void CreateProject(string[] Project);
+        void CreateProject();
         /// <summary>
         /// 检查项目配置文件是否格式正确
         /// </summary>
-        /// <param name="Project">项目配置文件数据</param>
-        void CheckFormat(string[] Project);
+        void CheckFormat();
     }
 }

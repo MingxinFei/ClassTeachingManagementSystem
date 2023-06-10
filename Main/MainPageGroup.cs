@@ -2,6 +2,7 @@
 using CTMS.Managers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 // 页面组命名空间
@@ -15,6 +16,7 @@ namespace CTMS.PageGroups
         /// <summary>
         /// 主函数
         /// </summary>
+        [DebuggerHidden]
         public static void Main()
         {
             try
@@ -46,7 +48,7 @@ namespace CTMS.PageGroups
                     }
                 );
                 Set("输入栏");
-                ((Page)this).SwitchShow(
+                SwitchShow(
                     new string[]
                     {
                         "退出",
@@ -69,9 +71,9 @@ namespace CTMS.PageGroups
                         },
                         () =>
                         {
-                            using (StatusPageGroup ScoreMenu = new StatusPageGroup())
+                            using (StatusPageGroup StatusMenu = new StatusPageGroup())
                             {
-                                ScoreMenu.GuardedPageMain();
+                                StatusMenu.GuardedPageMain();
                             }
                         }
                     }

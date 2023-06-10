@@ -31,7 +31,7 @@ namespace CTMS.PageGroups
             }
             using (var ProcessWorker = new StatusManager(ProjectFileName, PersonsFileName))
             {
-                ProcessWorker.CheckFormat(ProcessWorker.GetProjectConfig());
+                ProcessWorker.CheckFormat();
             }
         }
         /// <summary>
@@ -63,7 +63,7 @@ namespace CTMS.PageGroups
             // 创建项目
             using (var ProcessWorker = new StatusManager(ProjectFileNameTemp, PersonsFileNameTemp))
             {
-                ProcessWorker.CreateProject(ProcessWorker.GetPersonConfig());
+                ProcessWorker.CreateProject();
             }
             // 页面五
             Set(
@@ -82,24 +82,28 @@ namespace CTMS.PageGroups
         {
             while (EditorExit != true)
             {
-                Set(
-                    new string[]
-                    {
-                        "作业项目编辑器"
-                    }
-                );
-                Set("输入栏");
                 using (var ProcessWorker = new StatusManager(ProjectFileName, PersonsFileName))
                 {
-                    SwitchShow(
-                        ProcessWorker.GetProjectConfig(),
-                        new Page.SwitchProcessor[]
+                    Set(
+                        new string[]
                         {
-                            () => EditorExit = true,
-                            EditProject
-                        }
+                            "作业项目编辑器"
+                        }.Concat(ProcessWorker.GenerateProjectInfo()).ToArray()
                     );
+                    Set("输入栏");
                 }
+                SwitchShow(
+                    new string[]
+                    {
+                        "返回",
+                        "编辑项目"
+                    },
+                    new PageEx.SwitchProcessor[]
+                    {
+                        () => EditorExit = true,
+                        EditProject
+                    }
+                );
             }
             EditorExit = false;
         }
@@ -115,7 +119,7 @@ namespace CTMS.PageGroups
                     new string[]
                     {
                         "作业项目编辑器"
-                    }.Concat(SpawnProjectStrings(ProcessWorker.GetProjectConfig())).ToArray()
+                    }.Concat(ProcessWorker.GenerateProjectInfo()).ToArray()
                 );
                 Set("请输入序号");
                 int PersonIndexTemp = Convert.ToInt32((string)Show(false));
@@ -126,16 +130,16 @@ namespace CTMS.PageGroups
                     }
                 );
                 Set("请输入合格状态");
-                ((Page)this).SwitchShow(
+                SwitchShow(
                     new string[]
                     {
                         "未合格",
                         "已合格"
                     },
-                    new Page.SwitchProcessor[]
+                    new PageEx.SwitchProcessor[]
                     {
-                        () => ProcessWorker.SetStatus(ProcessWorker.GetProjectConfig(), PersonIndexTemp, false),
-                        () => ProcessWorker.SetStatus(ProcessWorker.GetProjectConfig(), PersonIndexTemp, true)
+                        () => ProcessWorker.SetStatus(PersonIndexTemp, false),
+                        () => ProcessWorker.SetStatus(PersonIndexTemp, true)
                     }
                 );
             }
@@ -148,7 +152,7 @@ namespace CTMS.PageGroups
             // 获取成绩
             using (var ProcessWorker = new StatusManager(ProjectFileName, PersonsFileName))
             {
-                string RateTemp = ProcessWorker.GetQualifiedRate(ProcessWorker.GetProjectConfig());
+                string RateTemp = ProcessWorker.GetQualifiedRate();
                 Set(
                     new string[]
                     {
@@ -175,7 +179,7 @@ namespace CTMS.PageGroups
                     }
                 );
                 Set("输入栏");
-                ((Page)this).SwitchShow(
+                SwitchShow(
                     new string[]
                     {
                         "返回",
@@ -185,7 +189,7 @@ namespace CTMS.PageGroups
                         "查看项目",
                         "查看合格率"
                     },
-                    new Page.SwitchProcessor[]
+                    new PageEx.SwitchProcessor[]
                     {
                         () => Exit = true,
                         LoadProject,
