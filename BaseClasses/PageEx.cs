@@ -1,113 +1,109 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿// 基础类命名空间
+namespace CTMS.BaseClasses;
 
-// 基础类命名空间
-namespace CTMS.BaseClasses
+/// <summary>
+/// <see cref="Page"/>的扩展类
+/// </summary>
+[Kind("扩展控制台页面")]
+public class PageEx : Page
 {
     /// <summary>
-    /// <see cref="Page"/>的扩展类
+    /// 显示页面并处理
     /// </summary>
-    public class PageEx : Page
+    /// <param name="thisProcessor">委托</param>
+    /// <param name="isGetChar">是否仅获取字符</param>
+    /// <exception cref="UnifyException"></exception>
+    public void Show(Processor thisProcessor, bool isGetChar = true)
     {
-        /// <summary>
-        /// 显示页面并处理
-        /// </summary>
-        /// <param name="ThisProcessor">委托</param>
-        /// <param name="IsGetChar">是否仅获取字符</param>
-        /// <exception cref="UnifyException"></exception>
-        public void Show(Processor ThisProcessor, bool IsGetChar = true)
+        Check(texts);
+        Check(inputText);
+        Check(thisProcessor);
+        try
         {
-            Check(Texts);
-            Check(InputText);
-            try
-            {
-                Clear();
-                Console.WriteLine();
-                foreach (string Line in Texts)
-                {
-                    Console.WriteLine(" " + Line + "\n");
-                }
-                Console.Write(" " + InputText + "：");
-                object Temp;
-                if (IsGetChar)
-                {
-                    Temp = Console.ReadKey().KeyChar;
-                }
-                else
-                {
-                    Temp = Console.ReadLine();
-                }
-                Console.WriteLine();
-                ThisProcessor.Invoke(Temp);
-            }
-            catch (IOException)
-            {
-                throw new UnifyException("输入输出错误", "Page");
-            }
-        }
-        /// <summary>
-        /// 显示分支页面并处理
-        /// </summary>
-        /// <param name="ThisTexts">分支选项</param>
-        /// <param name="ThisProcessors">委托数组</param>
-        public void SwitchShow(string[] ThisTexts, SwitchProcessor[] ThisProcessors)
-        {
-            Check(ThisTexts);
-            Check(Texts);
-            Check(InputText);
-            if (ThisTexts.Length >= 10)
-            {
-                throw new UnifyException("分支页面选项数量过多", "Page");
-            }
-            List<string> CasesTemp = new List<string>();
-            int PageIndex = -1;
-            for (int Index = 0; Index < ThisTexts.Length; Index++)
-            {
-                CasesTemp.Add($"{Index}键：" + ThisTexts[Index]);
-            }
             Clear();
             Console.WriteLine();
-            Set(Texts.Concat(CasesTemp.ToArray()).ToArray());
-            while (true)
+            foreach (string line in texts)
             {
-                try
-                {
-                    Show(
-                        (object PageIndexTemp) =>
-                        {
-                            PageIndex = Convert.ToInt32("" + PageIndexTemp);
-                            return null;
-                        }
-                    );
-                    if (PageIndex > ThisProcessors.Length - 1)
+                Console.WriteLine(" " + line + "\n");
+            }
+            Console.Write(" " + inputText + "：");
+            object temp;
+            if (isGetChar)
+            {
+                temp = Console.ReadKey().KeyChar;
+            }
+            else
+            {
+                temp = Console.ReadLine();
+            }
+            Console.WriteLine();
+            thisProcessor.Invoke(temp);
+        }
+        catch (IOException)
+        {
+            throw new UnifyException("输入输出错误", GetType());
+        }
+    }
+    /// <summary>
+    /// 显示分支页面并处理
+    /// </summary>
+    /// <param name="thisTexts">分支选项</param>
+    /// <param name="thisProcessors">委托数组</param>
+    public void SwitchShow(string[] thisTexts, SwitchProcessor[] thisProcessors)
+    {
+        Check(texts);
+        Check(inputText);
+        Check(thisTexts);
+        Check(thisProcessors);
+        if (thisTexts.Length >= 10)
+        {
+            throw new UnifyException("分支页面选项数量过多", GetType());
+        }
+        List<string> casesTemp = new List<string>();
+        int pageIndex = -1;
+        for (int index = 0; index < thisTexts.Length; index++)
+        {
+            casesTemp.Add($"{index}键：" + thisTexts[index]);
+        }
+        Clear();
+        Console.WriteLine();
+        Set(texts.Concat(casesTemp.ToArray()).ToArray());
+        while (true)
+        {
+            try
+            {
+                Show(
+                    (object pageIndexTemp) =>
                     {
-                        continue;
+                        pageIndex = Convert.ToInt32("" + pageIndexTemp);
+                        return null;
                     }
-                    else
-                    {
-                        break;
-                    }
-                }
-                catch (SystemException)
+                );
+                if (pageIndex > thisProcessors.Length - 1)
                 {
                     continue;
                 }
+                else
+                {
+                    break;
+                }
             }
-            Clear();
-            ThisProcessors[PageIndex].Invoke();
-            GC.Collect();
+            catch (SystemException)
+            {
+                continue;
+            }
         }
-        /// <summary>
-        /// 普通页面所使用的委托
-        /// </summary>
-        /// <param name="Datas">输入数据</param>
-        public delegate object Processor(object Datas);
-
-        /// <summary>
-        /// 多分支页面所使用的委托
-        /// </summary>
-        public delegate void SwitchProcessor();
+        Clear();
+        thisProcessors[pageIndex].Invoke();
+        GC.Collect();
     }
+    /// <summary>
+    /// 普通页面所使用的委托
+    /// </summary>
+    /// <param name="datas">输入数据</param>
+    public delegate object Processor(object datas);
+    /// <summary>
+    /// 多分支页面所使用的委托
+    /// </summary>
+    public delegate void SwitchProcessor();
 }

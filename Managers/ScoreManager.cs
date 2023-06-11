@@ -1,118 +1,116 @@
 ﻿using CTMS.BaseClasses;
-using System;
-using System.Collections.Generic;
 
 // 管理器命名空间
-namespace CTMS.Managers
+namespace CTMS.Managers;
+
+/// <summary>
+/// 成绩管理器
+/// </summary>
+[Kind("成绩管理器")]
+public class ScoreManager : Manager, IConcreteManageable
 {
     /// <summary>
-    /// 成绩管理器
+    /// 构造函数
     /// </summary>
-    public class ScoreManager : Manager, IConcreteManageable
+    /// <param name="inProjectFileName">项目配置文件</param>
+    /// <param name="inPersonsFileName">人员配置文件</param>
+    /// <exception cref="UnifyException"></exception>
+    public ScoreManager(string inProjectFileName, string inPersonsFileName) :
+        base(inProjectFileName, inPersonsFileName)
+    { }
+    /// <summary>
+    /// 创建一个项目配置文件
+    /// </summary>
+    /// <exception cref="UnifyException"></exception>
+    public void CreateProject()
     {
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="NewProjectFileName">项目配置文件</param>
-        /// <param name="NewPersonsFileName">人员配置文件</param>
-        /// <exception cref="UnifyException"></exception>
-        public ScoreManager(string NewProjectFileName, string NewPersonsFileName) :
-            base(NewProjectFileName, NewPersonsFileName)
-        { }
-        /// <summary>
-        /// 创建一个项目配置文件
-        /// </summary>
-        /// <exception cref="UnifyException"></exception>
-        public void CreateProject()
+        string[] persons = GetPersonConfig();
+        List<string> Temp = new List<string>();
+        foreach (string line in persons)
         {
-            string[] Persons = GetPersonConfig();
-            List<string> Temp = new List<string>();
-            foreach (string Data in Persons)
-            {
-                Temp.Add(Data + ":None");
-            }
-            SetProjectConfig(Temp.ToArray());
+            Temp.Add(line + ":None");
         }
-        /// <summary>
-        /// 检查项目配置文件是否格式正确
-        /// </summary>
-        /// <exception cref="UnifyException"></exception>
-        public void CheckFormat()
+        SetProjectConfig(Temp.ToArray());
+    }
+    /// <summary>
+    /// 检查项目配置文件是否格式正确
+    /// </summary>
+    /// <exception cref="UnifyException"></exception>
+    public void CheckFormat()
+    {
+        string[] project = GetProjectConfig();
+        string[] projectLineTemp;
+        foreach (string line in project)
         {
-            string[] Project = GetProjectConfig();
-            string[] ProjectLineTemp;
-            foreach (string Data in Project)
+            projectLineTemp = line.Split(':');
+            if (projectLineTemp[1] == "None")
             {
-                ProjectLineTemp = Data.Split(':');
-                if (ProjectLineTemp[1] == "None")
-                {
-                    continue;
-                }
-                try
-                {
-                    Convert.ToInt32(ProjectLineTemp[1]);
-                }
-                catch (SystemException)
-                {
-                    throw new UnifyException("数据可能被损坏或为其他类型的项目", "Manager");
-                }
+                continue;
             }
-        }
-        /// <summary>
-        /// 设置成绩
-        /// </summary>
-        /// <param name="Index">人员序号</param>
-        /// <param name="Value">成绩字符串</param>
-        /// <exception cref="UnifyException"></exception>
-        public void SetScore(int Index, string Value)
-        {
-            string[] Project = GetProjectConfig();
             try
             {
-                Convert.ToInt32(Value);
+                Convert.ToInt32(projectLineTemp[1]);
             }
             catch (SystemException)
             {
-                throw new UnifyException("数据可能被损坏", "Manager");
+                throw new UnifyException("数据可能被损坏或为其他类型的项目", GetType());
             }
-            string[] ProjectDataTemp = Project[Index].Split(':');
-            ProjectDataTemp[1] = Value;
-            Project[Index] = ProjectDataTemp[0] + ":" + ProjectDataTemp[1];
-            SetProjectConfig(Project);
         }
-        /// <summary>
-        /// 获取平均分
-        /// </summary>
-        /// <returns>平均分字符串</returns>
-        /// <exception cref="UnifyException"></exception>
-        public string GetAverageScore()
+    }
+    /// <summary>
+    /// 设置成绩
+    /// </summary>
+    /// <param name="index">人员序号</param>
+    /// <param name="value">成绩字符串</param>
+    /// <exception cref="UnifyException"></exception>
+    public void SetScore(int index, string value)
+    {
+        string[] project = GetProjectConfig();
+        try
         {
-            string[] Project = GetProjectConfig();
-            float Sum = 0;
-            int PersonSum = 0;
-            string DataTemp;
-            foreach (string Data in Project)
-            {
-                DataTemp = Data.Split(':')[1];
-                if (DataTemp == "None")
-                {
-                    continue;
-                }
-                try
-                {
-                    Sum += Convert.ToSingle(DataTemp);
-                    PersonSum++;
-                }
-                catch (SystemException)
-                {
-                    throw new UnifyException("数据可能被损坏", "Manager");
-                }
-            }
-            if (PersonSum == 0)
-            {
-                return "未写入";
-            }
-            return Convert.ToString(Sum / PersonSum) + "分";
+            Convert.ToInt32(value);
         }
+        catch (SystemException)
+        {
+            throw new UnifyException("数据可能被损坏", GetType());
+        }
+        string[] projectDataTemp = project[index].Split(':');
+        projectDataTemp[1] = value;
+        project[index] = projectDataTemp[0] + ":" + projectDataTemp[1];
+        SetProjectConfig(project);
+    }
+    /// <summary>
+    /// 获取平均分
+    /// </summary>
+    /// <returns>平均分字符串</returns>
+    /// <exception cref="UnifyException"></exception>
+    public string GetAverageScore()
+    {
+        string[] project = GetProjectConfig();
+        float sum = 0;
+        int personSum = 0;
+        string lineTemp;
+        foreach (string line in project)
+        {
+            lineTemp = line.Split(':')[1];
+            if (lineTemp == "None")
+            {
+                continue;
+            }
+            try
+            {
+                sum += Convert.ToSingle(lineTemp);
+                personSum++;
+            }
+            catch (SystemException)
+            {
+                throw new UnifyException("数据可能被损坏", GetType());
+            }
+        }
+        if (personSum == 0)
+        {
+            return "未写入";
+        }
+        return Convert.ToString(sum / personSum) + "分";
     }
 }

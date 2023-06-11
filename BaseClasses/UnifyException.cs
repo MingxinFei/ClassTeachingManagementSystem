@@ -1,30 +1,33 @@
-﻿using System;
+﻿using System.Reflection;
 
 // 基础类命名空间
-namespace CTMS.BaseClasses
+namespace CTMS.BaseClasses;
+
+/// <summary>
+/// 此程序的统一处理异常
+/// </summary>
+[Kind("统一异常")]
+public sealed class UnifyException : ApplicationException
 {
+    private Page errorPage;
     /// <summary>
-    /// 此程序的统一处理异常
+    /// 构造函数
     /// </summary>
-    public sealed class UnifyException : SystemException
+    /// <param name="log">日志消息</param>
+    /// <param name="type">抛出类</param>
+    public UnifyException(string log, Type type) : base()
     {
-        private Page ErrorMenu;
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="Log">日志消息</param>
-        /// <param name="Type">抛出类</param>
-        public UnifyException(string Log, string Type) : base()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            ErrorMenu = new Page(
-                new string[] {
-                    $"[{Type} Error] 运行时崩溃，{Log}"
-                },
-                "按任意键退出"
-            );
-            ErrorMenu.Show();
-            ErrorMenu = null;
-        }
+        Console.ForegroundColor = ConsoleColor.Red;
+        var attr = type.GetCustomAttribute<KindAttribute>();
+        errorPage = new Page(
+            new string[]
+            {
+                $"由[{attr.Kind}]程序部分引发的运行时崩溃：",
+                $"大致原因：{log}"
+            },
+            "按任意键退出"
+        );
+        errorPage.Show();
+        errorPage = null;
     }
 }

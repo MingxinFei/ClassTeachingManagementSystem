@@ -1,169 +1,170 @@
 ﻿using CTMS.BaseClasses;
 using CTMS.Managers;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
-// 页面组命名空间
-namespace CTMS.PageGroups
+// 页面管理组命名空间
+namespace CTMS.PageGroups;
+
+/// <summary>
+/// 主类
+/// </summary>
+[Kind("主页面管理组")]
+public sealed class MainPageGroup : PageGroup, IConcreteShowable
 {
     /// <summary>
-    /// 主类
+    /// 主函数
     /// </summary>
-    public sealed class MainPageGroup : PageGroup, IConcreteShowable
+    [DebuggerHidden]
+    public static void Main()
     {
-        /// <summary>
-        /// 主函数
-        /// </summary>
-        [DebuggerHidden]
-        public static void Main()
+        try
         {
-            try
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Title = "班级教学统一管理系统";
+            // 主页面
+            using (MainPageGroup mainMenu = new MainPageGroup())
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Title = "班级教学统一管理系统";
-                // 主页面
-                using (MainPageGroup MainMenu = new MainPageGroup())
+                if (!OperatingSystem.IsWindows())
                 {
-                    MainMenu.GuardedPageMain();
+                    throw new UnifyException("此程序只支持于Windows操作系统", mainMenu.GetType());
                 }
-            }
-            catch (UnifyException)
-            {
+                mainMenu.GuardedPageMain();
             }
         }
-        /// <summary>
-        /// 页面组主函数
-        /// </summary>
-        public void GuardedPageMain()
+        catch (UnifyException)
         {
-            while (Exit == false)
-            {
-                Set(
-                    new string[]
+        }
+    }
+    /// <summary>
+    /// 页面管理组主函数
+    /// </summary>
+    public void GuardedPageMain()
+    {
+        while (exit != true)
+        {
+            Set(
+                new string[]
+                {
+                    "班级教学统一管理系统",
+                    "著作权人 Mingxin.Fei，保留所有权利"
+                }
+            );
+            Set("输入栏");
+            SwitchShow(
+                new string[]
+                {
+                    "退出",
+                    "创建人员项目",
+                    "删除人员项目",
+                    "成绩管理",
+                    "作业管理"
+                },
+                new SwitchProcessor[]
+                {
+                    () => exit = true,
+                    CreateProject,
+                    DeleteProject,
+                    () =>
                     {
-                        "班级教学统一管理系统",
-                        "著作权人 Mingxin.Fei，保留所有权利"
-                    }
-                );
-                Set("输入栏");
-                SwitchShow(
-                    new string[]
-                    {
-                        "退出",
-                        "创建人员项目",
-                        "删除人员项目",
-                        "成绩管理",
-                        "作业管理"
+                        using (var manageMenu = new ScorePageGroup())
+                        {
+                            manageMenu.GuardedPageMain();
+                        }
                     },
-                    new SwitchProcessor[]
+                    () =>
                     {
-                        () => Exit = true,
-                        CreateProject,
-                        DeleteProject,
-                        () =>
+                        using (var manageMenu = new StatusPageGroup())
                         {
-                            using (ScorePageGroup ScoreMenu = new ScorePageGroup())
-                            {
-                                ScoreMenu.GuardedPageMain();
-                            }
-                        },
-                        () =>
-                        {
-                            using (StatusPageGroup StatusMenu = new StatusPageGroup())
-                            {
-                                StatusMenu.GuardedPageMain();
-                            }
+                            manageMenu.GuardedPageMain();
                         }
                     }
-                );
-            }
-            GC.Collect();
-        }
-        /// <summary>
-        /// 创建人员项目
-        /// </summary>
-        /// <exception cref="UnifyException"></exception>
-        public void CreateProject()
-        {
-            // 页面三
-            Set(
-                new string[] {
-                    "请输入人员项目配置文件名",
-                    "（*.persons文件，不带后缀名，且此文件必须在程序./Databases/目录下，否则会导致程序崩溃）"
                 }
             );
-            Set("输入栏");
-            Show(
-                (object FileNameTemp) =>
+        }
+        GC.Collect();
+    }
+    /// <summary>
+    /// 创建人员项目
+    /// </summary>
+    /// <exception cref="UnifyException"></exception>
+    public void CreateProject()
+    {
+        // 页面三
+        Set(
+            new string[] {
+                "请输入人员项目配置文件名",
+                "（*.persons文件，不带后缀名，且此文件必须在程序./Databases/目录下，否则会导致程序崩溃）"
+            }
+        );
+        Set("输入栏");
+        Show(
+            (object fileNameTemp) =>
+            {
+                string nameTemp;
+                List<string> PersonsTemp = new List<string>();
+                while (true)
                 {
-                    string NameTemp;
-                    List<string> PersonsTemp = new List<string>();
-                    while (true)
-                    {
-                        // 页面三
-                        Set(
-                            new string[] {
-                                "请输入人员名称",
-                            }
-                        );
-                        Set("输入栏");
-                        NameTemp = (string)Show(false);
-                        if (NameTemp == "None")
-                        {
-                            break;
+                    // 页面三
+                    Set(
+                        new string[] {
+                            "请输入人员名称",
                         }
-                        PersonsTemp.Add(NameTemp);
-                    }
-                    // 创建项目
-                    using (Manager ProcessWorker = new Manager(null, (string)FileNameTemp))
+                    );
+                    Set("输入栏");
+                    nameTemp = (string)Show(false);
+                    if (nameTemp == "None")
                     {
-                        ProcessWorker.SetPersonConfig(PersonsTemp.ToArray());
+                        break;
                     }
-                    return null;
+                    PersonsTemp.Add(nameTemp);
                 }
-            );
-            // 页面五
-            Set(
-                new string[] {
-                    "创建完成！"
+                // 创建项目
+                using (Manager ProcessWorker = new Manager(null, (string)fileNameTemp))
+                {
+                    ProcessWorker.SetPersonConfig(PersonsTemp.ToArray());
                 }
-            );
-            Block();
-        }
-        /// <summary>
-        /// 删除项目
-        /// </summary>
-        /// <exception cref="UnifyException"></exception>
-        protected override void DeleteProject()
+                return null;
+            }
+        );
+        // 页面五
+        Set(
+            new string[] {
+                "创建完成！"
+            }
+        );
+        Block();
+    }
+    /// <summary>
+    /// 删除项目
+    /// </summary>
+    /// <exception cref="UnifyException"></exception>
+    protected override void DeleteProject()
+    {
+        Set(
+            new string[] {
+                "请输入人员配置文件名",
+                "（*.persons文件，不带后缀名，且此文件必须在程序./Databases/目录下，否则会导致程序崩溃）"
+            }
+        );
+        Set("输入栏");
+        personsFileName = (string)Show(false);
+        try
         {
-            Set(
-                new string[] {
-                    "请输入人员配置文件名",
-                    "（*.persons文件，不带后缀名，且此文件必须在程序./Databases/目录下，否则会导致程序崩溃）"
-                }
-            );
-            Set("输入栏");
-            PersonsFileName = (string)Show(false);
-            try
-            {
-                File.Delete("./Databases/" + PersonsFileName + ".persons");
-            }
-            catch (DirectoryNotFoundException)
-            {
-                throw new UnifyException("文件未找到", "Page");
-            }
-            catch (PathTooLongException)
-            {
-                throw new UnifyException("路径过长", "Page");
-            }
-            Set(
-                new string[] {
-                    "删除完成！"
-                }
-            );
-            Block();
+            File.Delete("./Databases/" + personsFileName + ".persons");
         }
+        catch (DirectoryNotFoundException)
+        {
+            throw new UnifyException("文件未找到", GetType());
+        }
+        catch (PathTooLongException)
+        {
+            throw new UnifyException("路径过长", GetType());
+        }
+        Set(
+            new string[] {
+                "删除完成！"
+            }
+        );
+        Block();
     }
 }
