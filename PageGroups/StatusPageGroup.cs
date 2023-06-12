@@ -11,13 +11,6 @@ namespace CTMS.PageGroups;
 public class StatusPageGroup : PageGroup, IEditorShowable
 {
     /// <summary>
-    /// 构造函数
-    /// </summary>
-    public StatusPageGroup()
-    {
-        editorExit = false;
-    }
-    /// <summary>
     /// 加载项目
     /// </summary>
     protected override void LoadProject()
@@ -32,6 +25,7 @@ public class StatusPageGroup : PageGroup, IEditorShowable
             processWorker.CheckFormat();
         }
     }
+
     /// <summary>
     /// 创建项目
     /// </summary>
@@ -72,6 +66,7 @@ public class StatusPageGroup : PageGroup, IEditorShowable
         );
         Block();
     }
+
     /// <summary>
     /// 查看项目
     /// </summary>
@@ -105,6 +100,7 @@ public class StatusPageGroup : PageGroup, IEditorShowable
         }
         editorExit = false;
     }
+
     /// <summary>
     /// 编辑项目
     /// </summary>
@@ -142,6 +138,7 @@ public class StatusPageGroup : PageGroup, IEditorShowable
             );
         }
     }
+
     /// <summary>
     /// 查看合格率
     /// </summary>
@@ -161,6 +158,7 @@ public class StatusPageGroup : PageGroup, IEditorShowable
         }
         Block();
     }
+
     /// <summary>
     /// 页面管理组主函数
     /// </summary>

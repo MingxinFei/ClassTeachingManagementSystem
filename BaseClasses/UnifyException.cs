@@ -9,7 +9,11 @@ namespace CTMS.BaseClasses;
 [Kind("统一异常")]
 public sealed class UnifyException : ApplicationException
 {
+    /// <summary>
+    /// 错误页面
+    /// </summary>
     private Page errorPage;
+
     /// <summary>
     /// 构造函数
     /// </summary>
@@ -18,12 +22,11 @@ public sealed class UnifyException : ApplicationException
     public UnifyException(string log, Type type) : base()
     {
         Console.ForegroundColor = ConsoleColor.Red;
-        var attr = type.GetCustomAttribute<KindAttribute>();
         errorPage = new Page(
             new string[]
             {
-                $"由[{attr.Kind}]程序部分引发的运行时崩溃：",
-                $"大致原因：{log}"
+                $"由[{type.GetCustomAttribute<KindAttribute>().Kind}]程序部分引发的运行时崩溃：",
+                $"原因：{log}"
             },
             "按任意键退出"
         );

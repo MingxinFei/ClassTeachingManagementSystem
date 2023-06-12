@@ -10,14 +10,26 @@ namespace CTMS.BaseClasses;
 [Kind("控制台页面")]
 public class Page : IDisposable
 {
-    protected string[] texts;
-    protected string inputText;
+    /// <summary>
+    /// 输出文字内容
+    /// </summary>
+    protected string[]? texts;
+
+    /// <summary>
+    /// 输入提示文字内容
+    /// </summary>
+    protected string? inputText;
+
+    /// <summary>
+    /// 是否已释放
+    /// </summary>
     protected bool isDisposed;
+
     /// <summary>
     /// 构造函数
     /// </summary>
-    /// <param name="inTexts">输出文字内容</param>
-    /// <param name="inInputText">输入提示文字内容</param>
+    /// <param name="inTexts">新<see cref="texts"/></param>
+    /// <param name="inInputText">新<see cref="inputText"/></param>
     /// <exception cref="UnifyException"></exception>
     public Page(string[] inTexts, string inInputText)
     {
@@ -26,27 +38,32 @@ public class Page : IDisposable
         texts = inTexts;
         inputText = inInputText;
     }
+
     /// <summary>
     /// 构造函数
+    /// 所有属性均初始化为<see cref="null"/>
     /// </summary>
     protected Page()
     {
         texts = null;
         inputText = null;
     }
+
     /// <summary>
     /// 析构函数
+    /// 清理工作在<see cref="Dispose"/>实现
     /// </summary>
     ~Page()
     {
         Dispose();
     }
+
     /// <summary>
-    /// 执行系统命令
+    /// 清空控制台
+    /// 使用<see cref="Process"/>实现
     /// </summary>
     public static void Clear()
     {
-        Console.Clear();
         using (var commandProcess = new Process())
         {
             commandProcess.StartInfo.FileName = "cmd.exe";
@@ -57,6 +74,7 @@ public class Page : IDisposable
             commandProcess.WaitForExit();
         }
     }
+
     /// <summary>
     /// 释放函数
     /// </summary>
@@ -71,43 +89,50 @@ public class Page : IDisposable
         inputText = null;
         isDisposed = true;
     }
+
     /// <summary>
     /// 检查对象是否为空
     /// </summary>
     /// <param name="data">检查对象</param>
     /// <exception cref="UnifyException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void Check(object data)
+    protected void Check(object? data)
     {
         if (data == null)
         {
             throw new UnifyException("检查到空对象", GetType());
         }
     }
+
     /// <summary>
-    /// 设置页面内容数据
+    /// 设置<see cref="texts"/>
     /// </summary>
-    /// <param name="inTexts">页面内容数据</param>
+    /// <param name="inTexts">新<see cref="texts"/></param>
     /// <exception cref="UnifyException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Set(string[] inTexts)
     {
         Check(inTexts);
         texts = inTexts;
     }
+
     /// <summary>
-    /// 设置页面输入栏数据
+    /// 设置<see cref="inputText"/>
     /// </summary>
-    /// <param name="inInputText">页面输入栏数据</param>
+    /// <param name="inInputText">新<see cref="inputText"/></param>
     /// <exception cref="UnifyException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Set(string inInputText)
     {
         Check(inInputText);
         inputText = inInputText;
     }
+
     /// <summary>
     /// 阻塞程序
     /// </summary>
     /// <exception cref="UnifyException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Block()
     {
         try
@@ -120,13 +145,14 @@ public class Page : IDisposable
             throw new UnifyException("输入输出错误", GetType());
         }
     }
+
     /// <summary>
     /// 显示页面并获取输入
     /// </summary>
     /// <param name="isGetChar">是否仅获取字符</param>
     /// <returns>获取输入</returns>
     /// <exception cref="UnifyException"></exception>
-    public object Show(bool isGetChar = true)
+    public object? Show(bool isGetChar = true)
     {
         Check(texts);
         Check(inputText);
@@ -134,7 +160,7 @@ public class Page : IDisposable
         {
             Clear();
             Console.WriteLine();
-            foreach (string line in texts)
+            foreach (string? line in texts)
             {
                 Console.WriteLine(" " + line + "\n");
             }
@@ -156,6 +182,7 @@ public class Page : IDisposable
             throw new UnifyException("输入输出错误", GetType());
         }
     }
+
     /// <summary>
     /// 显示页面
     /// </summary>
@@ -168,7 +195,7 @@ public class Page : IDisposable
         {
             Clear();
             Console.WriteLine();
-            foreach (string line in texts)
+            foreach (string? line in texts)
             {
                 Console.WriteLine(" " + line + "\n");
             }

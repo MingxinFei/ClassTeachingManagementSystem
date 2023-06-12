@@ -10,6 +10,7 @@ internal interface IConcreteManageable
     /// 创建一个项目配置文件
     /// </summary>
     void CreateProject();
+
     /// <summary>
     /// 检查项目配置文件是否格式正确
     /// </summary>

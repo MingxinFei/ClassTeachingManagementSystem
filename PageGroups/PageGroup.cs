@@ -10,10 +10,26 @@ namespace CTMS.PageGroups;
 [Kind("基页面管理组")]
 public abstract class PageGroup : PageEx
 {
-    protected string personsFileName;
-    protected string projectFileName;
+    /// <summary>
+    /// 项目配置文件名
+    /// </summary>
+    protected string? projectFileName;
+
+    /// <summary>
+    /// 人员配置文件名
+    /// </summary>
+    protected string? personsFileName;
+
+    /// <summary>
+    /// 是否退出
+    /// </summary>
     protected bool exit;
+
+    /// <summary>
+    /// 编辑页面是否退出
+    /// </summary>
     protected bool editorExit;
+
     /// <summary>
     /// 构造函数
     /// </summary>
@@ -24,13 +40,16 @@ public abstract class PageGroup : PageEx
         exit = false;
         editorExit = false;
     }
+
     /// <summary>
     /// 析构函数
+    /// 清理工作在<see cref="Dispose"/>实现
     /// </summary>
     ~PageGroup()
     {
         Dispose();
     }
+
     /// <summary>
     /// 释放函数
     /// </summary>
@@ -40,6 +59,7 @@ public abstract class PageGroup : PageEx
         personsFileName = null;
         projectFileName = null;
     }
+
     /// <summary>
     /// 加载项目
     /// </summary>
@@ -69,6 +89,7 @@ public abstract class PageGroup : PageEx
             false
         );
     }
+
     /// <summary>
     /// 删除项目
     /// </summary>

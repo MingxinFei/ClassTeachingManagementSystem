@@ -10,29 +10,78 @@ namespace CTMS.Managers;
 [Kind("基管理器")]
 public class Manager : IDisposable
 {
-    protected string projectFileName;
-    protected string personsFileName;
-    private string[] projectInfo;
+    /// <summary>
+    /// 项目配置文件名
+    /// </summary>
+    protected string? projectFileName;
+
+    /// <summary>
+    /// 人员配置文件名
+    /// </summary>
+    protected string? personsFileName;
+
+    /// <summary>
+    /// 项目信息
+    /// </summary>
+    private string[]? projectInfo;
+
+    /// <summary>
+    /// 是否已销毁
+    /// </summary>
     protected bool isDisposed;
+
+    /// <summary>
+    /// 人员配置文件数据
+    /// </summary>
+    public string[]? PersonConfig
+    {
+        get
+        {
+            return ReadFile("./Databases/", personsFileName, ".persons");
+        }
+        set
+        {
+            WriteFile(value, "./Databases/", personsFileName, ".persons");
+        }
+    }
+
+    /// <summary>
+    /// 项目配置文件数据
+    /// </summary>
+    public string[]? ProjectConfig
+    {
+        get
+        {
+            return ReadFile("./Databases/Projects/", projectFileName, ".managed");
+        }
+        set
+        {
+            WriteFile(value, "./Databases/Projects/", projectFileName, ".managed");
+        }
+    }
+
     /// <summary>
     /// 构造函数
     /// </summary>
-    /// <param name="inProjectFileName">项目配置文件</param>
-    /// <param name="inPersonsFileName">人员配置文件</param>
+    /// <param name="inProjectFileName">新<see cref="projectFileName"/></param>
+    /// <param name="inPersonsFileName">新<see cref="personsFileName"/></param>
     /// <exception cref="UnifyException"></exception>
-    public Manager(string inProjectFileName, string inPersonsFileName)
+    public Manager(string? inProjectFileName, string? inPersonsFileName)
     {
         projectFileName = inProjectFileName;
         personsFileName = inPersonsFileName;
         isDisposed = false;
     }
+
     /// <summary>
     /// 析构函数
+    /// 清理工作在<see cref="Dispose"/>实现
     /// </summary>
     ~Manager()
     {
         Dispose();
     }
+
     /// <summary>
     /// 释放函数
     /// </summary>
@@ -45,112 +94,97 @@ public class Manager : IDisposable
         GC.SuppressFinalize(this);
         projectFileName = null;
         personsFileName = null;
+        projectInfo = null;
         isDisposed = true;
     }
+
     /// <summary>
     /// 检查对象是否为空
     /// </summary>
     /// <param name="data">检查对象</param>
     /// <exception cref="UnifyException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Check(object data)
+    private void Check(object? data)
     {
         if (data == null)
         {
             throw new UnifyException("检查到空对象", GetType());
         }
     }
-    /// <summary>
-    /// 设置人员配置文件数据
-    /// </summary>
-    /// <param name="texts">人员配置文件数据</param>
-    /// <exception cref="UnifyException"></exception>
-    public void SetPersonConfig(string[] texts)
+
+    private string[] ReadFile(string? filePath, string? fileName, string? fileFormat)
     {
-        Check(personsFileName);
+        Check(filePath);
+        Check(fileName);
+        Check(fileFormat);
         try
         {
-            File.WriteAllLines("./Databases/" + personsFileName + ".persons", texts);
+            return File.ReadAllLines(filePath + fileName + fileFormat);
         }
         catch (FileNotFoundException)
         {
             throw new UnifyException("文件未找到", GetType());
         }
-    }
-    /// <summary>
-    /// 获取人员配置文件数据
-    /// </summary>
-    /// <returns>人员配置文件数据</returns>
-    /// <exception cref="UnifyException"></exception>
-    public string[] GetPersonConfig()
-    {
-        Check(personsFileName);
-        try
+        catch (DirectoryNotFoundException)
         {
-            return File.ReadAllLines("./Databases/" + personsFileName + ".persons");
+            throw new UnifyException("路径未找到", GetType());
         }
-        catch (FileNotFoundException)
+        catch (PathTooLongException)
         {
-            throw new UnifyException("文件未找到", GetType());
+            throw new UnifyException("路径过长", GetType());
         }
         catch
         {
             throw new UnifyException("未知错误", GetType());
         }
     }
-    /// <summary>
-    /// 设置项目配置文件数据
-    /// </summary>
-    /// <param name="texts">项目配置文件数据</param>
-    /// <exception cref="UnifyException"></exception>
-    public void SetProjectConfig(string[] texts)
+
+    private void WriteFile(string[]? value, string? filePath, string? fileName, string? fileFormat)
     {
-        Check(projectFileName);
+        Check(value);
+        Check(filePath);
+        Check(fileName);
+        Check(fileFormat);
         try
         {
-            File.WriteAllLines("./Databases/Projects/" + projectFileName + ".managed", texts);
+            File.WriteAllLines(filePath + fileName + fileFormat, value);
         }
         catch (FileNotFoundException)
         {
             throw new UnifyException("文件未找到", GetType());
         }
-    }
-    /// <summary>
-    /// 获取项目配置文件数据
-    /// </summary>
-    /// <returns>项目配置文件数据</returns>
-    /// <exception cref="UnifyException"></exception>
-    public string[] GetProjectConfig()
-    {
-        Check(projectFileName);
-        try
+        catch (DirectoryNotFoundException)
         {
-            return File.ReadAllLines("./Databases/Projects/" + projectFileName + ".managed");
+            throw new UnifyException("路径未找到", GetType());
         }
-        catch (FileNotFoundException)
+        catch (PathTooLongException)
         {
-            throw new UnifyException("项目配置文件加载异常", typeof(Manager));
+            throw new UnifyException("路径过长", GetType());
+        }
+        catch
+        {
+            throw new UnifyException("未知错误", GetType());
         }
     }
+
     /// <summary>
-    /// 生成给用户显示的项目信息
+    /// 生成<see cref="projectInfo"/>
     /// </summary>
-    /// <param name="Project">项目配置文件数据</param>
-    /// <param name="IsRespawn">是否重新生成</param>
+    /// <param name="isRespawn">是否重新生成</param>
     /// <returns>给用户显示的项目信息</returns>
-    public string[] GenerateProjectInfo(bool IsRespawn = false)
+    public string[] GenerateProjectInfo(bool isRespawn = false)
     {
-        if (IsRespawn || projectInfo == null)
+        if (isRespawn || projectInfo == null)
         {
-            string[] Project = GetProjectConfig();
-            List<string> ProjectDataTemp = new List<string>();
-            string[] ProjectLineTemp;
-            for (int Index = 0; Index < Project.Length; Index++)
+            string[] project = ProjectConfig;
+            List<string> projectDataTemp = new List<string>();
+            string[] projectLineTemp;
+            for (int index = 0; index < project.Length; index++)
             {
-                ProjectLineTemp = Project[Index].Split(':');
-                ProjectDataTemp.Add($"序号{Index}：{ProjectLineTemp[0]}：{ProjectLineTemp[1]}");
+                projectLineTemp = project[index].Split(':');
+                projectDataTemp.Add($"序号{index}：{projectLineTemp[0]}：{projectLineTemp[1]}");
             }
-            projectInfo = ProjectDataTemp.ToArray();
+            projectInfo = projectDataTemp.ToArray();
         }
         return projectInfo;
     }

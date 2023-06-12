@@ -18,27 +18,29 @@ public class StatusManager : Manager, IConcreteManageable
     public StatusManager(string inProjectFileName, string inPersonsFileName) :
         base(inProjectFileName, inPersonsFileName)
     { }
+
     /// <summary>
-    /// 创建一个项目配置文件
+    /// 创建项目
     /// </summary>
     /// <exception cref="UnifyException"></exception>
     public void CreateProject()
     {
-        string[] persons = GetPersonConfig();
+        string[]? persons = PersonConfig;
         List<string> temp = new List<string>();
-        foreach (string line in persons)
+        foreach (string? line in persons)
         {
             temp.Add(line + ":未合格");
         }
-        SetProjectConfig(temp.ToArray());
+        ProjectConfig = temp.ToArray();
     }
+
     /// <summary>
-    /// 检查项目配置文件是否格式正确
+    /// 检查项目配置文件格式是否正确
     /// </summary>
     /// <exception cref="UnifyException"></exception>
     public void CheckFormat()
     {
-        string[] project = GetProjectConfig();
+        string[] project = ProjectConfig;
         string temp;
         foreach (string line in project)
         {
@@ -49,6 +51,7 @@ public class StatusManager : Manager, IConcreteManageable
             }
         }
     }
+
     /// <summary>
     /// 设置状态
     /// </summary>
@@ -57,7 +60,7 @@ public class StatusManager : Manager, IConcreteManageable
     /// <exception cref="UnifyException"></exception>
     public void SetStatus(int index, bool value)
     {
-        string[] project = GetProjectConfig();
+        string[] project = ProjectConfig;
         string[] projectDataTemp = project[index].Split(':');
         if (value)
         {
@@ -68,15 +71,16 @@ public class StatusManager : Manager, IConcreteManageable
             projectDataTemp[1] = "未合格";
         }
         project[index] = projectDataTemp[0] + ":" + projectDataTemp[1];
-        SetProjectConfig(project);
+        ProjectConfig = project;
     }
+
     /// <summary>
     /// 获取合格率
     /// </summary>
     /// <returns>合格率字符串</returns>
     public string GetQualifiedRate()
     {
-        string[] project = GetProjectConfig();
+        string[] project = ProjectConfig;
         int count = 0;
         foreach (string line in project)
         {

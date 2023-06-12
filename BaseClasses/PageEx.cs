@@ -27,7 +27,7 @@ public class PageEx : Page
                 Console.WriteLine(" " + line + "\n");
             }
             Console.Write(" " + inputText + "：");
-            object temp;
+            object? temp;
             if (isGetChar)
             {
                 temp = Console.ReadKey().KeyChar;
@@ -44,6 +44,7 @@ public class PageEx : Page
             throw new UnifyException("输入输出错误", GetType());
         }
     }
+
     /// <summary>
     /// 显示分支页面并处理
     /// </summary>
@@ -97,11 +98,13 @@ public class PageEx : Page
         thisProcessors[pageIndex].Invoke();
         GC.Collect();
     }
+
     /// <summary>
     /// 普通页面所使用的委托
     /// </summary>
     /// <param name="datas">输入数据</param>
     public delegate object Processor(object datas);
+
     /// <summary>
     /// 多分支页面所使用的委托
     /// </summary>

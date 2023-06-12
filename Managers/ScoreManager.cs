@@ -18,27 +18,29 @@ public class ScoreManager : Manager, IConcreteManageable
     public ScoreManager(string inProjectFileName, string inPersonsFileName) :
         base(inProjectFileName, inPersonsFileName)
     { }
+
     /// <summary>
-    /// 创建一个项目配置文件
+    /// 创建项目
     /// </summary>
     /// <exception cref="UnifyException"></exception>
     public void CreateProject()
     {
-        string[] persons = GetPersonConfig();
-        List<string> Temp = new List<string>();
-        foreach (string line in persons)
+        string[]? persons = PersonConfig;
+        List<string> temp = new List<string>();
+        foreach (string? line in persons)
         {
-            Temp.Add(line + ":None");
+            temp.Add(line + ":None");
         }
-        SetProjectConfig(Temp.ToArray());
+        ProjectConfig = temp.ToArray();
     }
+
     /// <summary>
-    /// 检查项目配置文件是否格式正确
+    /// 检查项目配置文件格式是否正确
     /// </summary>
     /// <exception cref="UnifyException"></exception>
     public void CheckFormat()
     {
-        string[] project = GetProjectConfig();
+        string[] project = ProjectConfig;
         string[] projectLineTemp;
         foreach (string line in project)
         {
@@ -57,6 +59,7 @@ public class ScoreManager : Manager, IConcreteManageable
             }
         }
     }
+
     /// <summary>
     /// 设置成绩
     /// </summary>
@@ -65,7 +68,7 @@ public class ScoreManager : Manager, IConcreteManageable
     /// <exception cref="UnifyException"></exception>
     public void SetScore(int index, string value)
     {
-        string[] project = GetProjectConfig();
+        string[] project = ProjectConfig;
         try
         {
             Convert.ToInt32(value);
@@ -77,16 +80,17 @@ public class ScoreManager : Manager, IConcreteManageable
         string[] projectDataTemp = project[index].Split(':');
         projectDataTemp[1] = value;
         project[index] = projectDataTemp[0] + ":" + projectDataTemp[1];
-        SetProjectConfig(project);
+        ProjectConfig = project;
     }
+
     /// <summary>
-    /// 获取平均分
+    /// 获取平均成绩
     /// </summary>
-    /// <returns>平均分字符串</returns>
+    /// <returns>平均成绩字符串</returns>
     /// <exception cref="UnifyException"></exception>
     public string GetAverageScore()
     {
-        string[] project = GetProjectConfig();
+        string[] project = ProjectConfig;
         float sum = 0;
         int personSum = 0;
         string lineTemp;

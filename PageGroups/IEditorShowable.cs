@@ -10,6 +10,7 @@ public interface IEditorShowable : IConcreteShowable
     /// 查看项目
     /// </summary>
     void ReadProject();
+
     /// <summary>
     /// 编辑项目
     /// </summary>

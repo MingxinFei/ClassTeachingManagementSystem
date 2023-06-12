@@ -1,6 +1,4 @@
-﻿using System;
-
-// 基础类命名空间
+﻿// 基础类命名空间
 namespace CTMS.BaseClasses
 {
     /// <summary>
@@ -11,6 +9,7 @@ namespace CTMS.BaseClasses
     public class KindAttribute : Attribute
     {
         private string kind;
+
         public string Kind
         {
             get

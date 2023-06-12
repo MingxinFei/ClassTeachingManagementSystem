@@ -11,13 +11,6 @@ namespace CTMS.PageGroups;
 public class ScorePageGroup : PageGroup, IEditorShowable
 {
     /// <summary>
-    /// 构造函数
-    /// </summary>
-    public ScorePageGroup()
-    { 
-        editorExit = false;
-    }
-    /// <summary>
     /// 加载项目
     /// </summary>
     protected override void LoadProject()
@@ -32,6 +25,7 @@ public class ScorePageGroup : PageGroup, IEditorShowable
             processWorker.CheckFormat();
         }
     }
+
     /// <summary>
     /// 创建项目
     /// </summary>
@@ -72,6 +66,7 @@ public class ScorePageGroup : PageGroup, IEditorShowable
         );
         Block();
     }
+
     /// <summary>
     /// 查看项目
     /// </summary>
@@ -104,6 +99,7 @@ public class ScorePageGroup : PageGroup, IEditorShowable
         }
         editorExit = false;
     }
+
     /// <summary>
     /// 编辑项目
     /// </summary>
@@ -138,8 +134,9 @@ public class ScorePageGroup : PageGroup, IEditorShowable
             }
         }
     }
+
     /// <summary>
-    /// 查看平均分
+    /// 查看平均成绩
     /// </summary>
     /// <exception cref="UnifyException"></exception>
     private void GetAverageScore()
@@ -159,6 +156,7 @@ public class ScorePageGroup : PageGroup, IEditorShowable
         }
         Block();
     }
+
     /// <summary>
     /// 页面管理组主函数
     /// </summary>

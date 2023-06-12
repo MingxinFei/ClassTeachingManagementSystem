@@ -35,6 +35,7 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
         {
         }
     }
+
     /// <summary>
     /// 页面管理组主函数
     /// </summary>
@@ -83,6 +84,7 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
         }
         GC.Collect();
     }
+
     /// <summary>
     /// 创建人员项目
     /// </summary>
@@ -101,7 +103,7 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
             (object fileNameTemp) =>
             {
                 string nameTemp;
-                List<string> PersonsTemp = new List<string>();
+                List<string> personsTemp = new List<string>();
                 while (true)
                 {
                     // 页面三
@@ -116,12 +118,12 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
                     {
                         break;
                     }
-                    PersonsTemp.Add(nameTemp);
+                    personsTemp.Add(nameTemp);
                 }
                 // 创建项目
-                using (Manager ProcessWorker = new Manager(null, (string)fileNameTemp))
+                using (Manager processWorker = new Manager(null, (string)fileNameTemp))
                 {
-                    ProcessWorker.SetPersonConfig(PersonsTemp.ToArray());
+                    processWorker.PersonConfig = personsTemp.ToArray();
                 }
                 return null;
             }
@@ -134,6 +136,7 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
         );
         Block();
     }
+
     /// <summary>
     /// 删除项目
     /// </summary>
