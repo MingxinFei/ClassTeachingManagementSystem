@@ -8,7 +8,7 @@ namespace CTMS.BaseClasses;
 /// 页面类
 /// </summary>
 [Kind("控制台页面")]
-public class Page : IDisposable
+public class Page : UnifyObject, IDisposable
 {
     /// <summary>
     /// 输出文字内容
@@ -19,11 +19,6 @@ public class Page : IDisposable
     /// 输入提示文字内容
     /// </summary>
     protected string? inputText;
-
-    /// <summary>
-    /// 是否已释放
-    /// </summary>
-    protected bool isDisposed;
 
     /// <summary>
     /// 构造函数
@@ -88,20 +83,6 @@ public class Page : IDisposable
         texts = null;
         inputText = null;
         isDisposed = true;
-    }
-
-    /// <summary>
-    /// 检查对象是否为空
-    /// </summary>
-    /// <param name="data">检查对象</param>
-    /// <exception cref="UnifyException"></exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void Check(object? data)
-    {
-        if (data == null)
-        {
-            throw new UnifyException("检查到空对象", GetType());
-        }
     }
 
     /// <summary>

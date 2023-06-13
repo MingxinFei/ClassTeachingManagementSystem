@@ -1,5 +1,4 @@
 ﻿using CTMS.BaseClasses;
-using System.Runtime.CompilerServices;
 
 // 管理器命名空间
 namespace CTMS.Managers;
@@ -8,7 +7,7 @@ namespace CTMS.Managers;
 /// 管理器
 /// </summary>
 [Kind("基管理器")]
-public class Manager : IDisposable
+public class Manager : UnifyObject, IDisposable
 {
     /// <summary>
     /// 项目配置文件名
@@ -24,11 +23,6 @@ public class Manager : IDisposable
     /// 项目信息
     /// </summary>
     private string[]? projectInfo;
-
-    /// <summary>
-    /// 是否已销毁
-    /// </summary>
-    protected bool isDisposed;
 
     /// <summary>
     /// 人员配置文件数据
@@ -99,19 +93,13 @@ public class Manager : IDisposable
     }
 
     /// <summary>
-    /// 检查对象是否为空
+    /// 读取文件
     /// </summary>
-    /// <param name="data">检查对象</param>
+    /// <param name="filePath">文件路径</param>
+    /// <param name="fileName">文件名</param>
+    /// <param name="fileFormat">文件后缀名</param>
+    /// <returns>文件数据</returns>
     /// <exception cref="UnifyException"></exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Check(object? data)
-    {
-        if (data == null)
-        {
-            throw new UnifyException("检查到空对象", GetType());
-        }
-    }
-
     private string[] ReadFile(string? filePath, string? fileName, string? fileFormat)
     {
         Check(filePath);
@@ -139,6 +127,14 @@ public class Manager : IDisposable
         }
     }
 
+    /// <summary>
+    /// 写入文件
+    /// </summary>
+    /// <param name="value">文件数据</param>
+    /// <param name="filePath">文件路径</param>
+    /// <param name="fileName">文件名</param>
+    /// <param name="fileFormat">文件后缀名</param>
+    /// <exception cref="UnifyException"></exception>
     private void WriteFile(string[]? value, string? filePath, string? fileName, string? fileFormat)
     {
         Check(value);
@@ -187,5 +183,44 @@ public class Manager : IDisposable
             projectInfo = projectDataTemp.ToArray();
         }
         return projectInfo;
+    }
+
+    /// <summary>
+    /// 创建项目
+    /// </summary>
+    /// <param name="data"></param>
+    public void CreateProject(string data)
+    {
+        string[]? persons = PersonConfig;
+        List<string> temp = new List<string>();
+        foreach (string? line in persons)
+        {
+            temp.Add(line + ":" + data);
+        }
+        ProjectConfig = temp.ToArray();
+    }
+
+    /// <summary>
+    /// 删除项目
+    /// </summary>
+    /// <exception cref="UnifyException"></exception>
+    public void DeleteProject()
+    {
+        try
+        {
+            File.Delete("./Databases/Projects/" + projectFileName + ".managed");
+        }
+        catch (DirectoryNotFoundException)
+        {
+            throw new UnifyException("路径未找到", GetType());
+        }
+        catch (PathTooLongException)
+        {
+            throw new UnifyException("路径过长", GetType());
+        }
+        catch
+        {
+            throw new UnifyException("未知错误", GetType());
+        }
     }
 }

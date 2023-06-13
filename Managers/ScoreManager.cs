@@ -23,16 +23,7 @@ public class ScoreManager : Manager, IConcreteManageable
     /// 创建项目
     /// </summary>
     /// <exception cref="UnifyException"></exception>
-    public void CreateProject()
-    {
-        string[]? persons = PersonConfig;
-        List<string> temp = new List<string>();
-        foreach (string? line in persons)
-        {
-            temp.Add(line + ":None");
-        }
-        ProjectConfig = temp.ToArray();
-    }
+    public void CreateProject() => CreateProject("None");
 
     /// <summary>
     /// 检查项目配置文件格式是否正确
@@ -41,17 +32,17 @@ public class ScoreManager : Manager, IConcreteManageable
     public void CheckFormat()
     {
         string[] project = ProjectConfig;
-        string[] projectLineTemp;
+        string[] temp;
         foreach (string line in project)
         {
-            projectLineTemp = line.Split(':');
-            if (projectLineTemp[1] == "None")
+            temp = line.Split(':');
+            if (temp[1] == "None")
             {
                 continue;
             }
             try
             {
-                Convert.ToInt32(projectLineTemp[1]);
+                Convert.ToInt32(temp[1]);
             }
             catch (SystemException)
             {

@@ -96,20 +96,9 @@ public abstract class PageGroup : PageEx
     /// <exception cref="UnifyException"></exception>
     protected virtual void DeleteProject()
     {
-        using (var processWorker = new StatusManager(projectFileName, personsFileName))
+        using (var processWorker = new Manager(projectFileName, personsFileName))
         {
-            try
-            {
-                File.Delete("./Databases/Projects/" + projectFileName + ".managed");
-            }
-            catch (DirectoryNotFoundException)
-            {
-                throw new UnifyException("文件未找到", GetType());
-            }
-            catch (PathTooLongException)
-            {
-                throw new UnifyException("路径过长", GetType());
-            }
+            processWorker.DeleteProject();
         }
         Set(
             new string[] {

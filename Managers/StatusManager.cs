@@ -23,16 +23,7 @@ public class StatusManager : Manager, IConcreteManageable
     /// 创建项目
     /// </summary>
     /// <exception cref="UnifyException"></exception>
-    public void CreateProject()
-    {
-        string[]? persons = PersonConfig;
-        List<string> temp = new List<string>();
-        foreach (string? line in persons)
-        {
-            temp.Add(line + ":未合格");
-        }
-        ProjectConfig = temp.ToArray();
-    }
+    public void CreateProject() => CreateProject("未合格");
 
     /// <summary>
     /// 检查项目配置文件格式是否正确
