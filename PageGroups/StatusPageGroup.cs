@@ -41,7 +41,7 @@ public class StatusPageGroup : PageGroup, IEditorShowable
             }
         );
         Set("输入栏");
-        string projectFileNameTemp = (string)Show(false);
+        projectFileName = (string)Show(false);
         // 页面四
         Set(
             new string[]
@@ -51,9 +51,9 @@ public class StatusPageGroup : PageGroup, IEditorShowable
             }
         );
         Set("输入栏");
-        string personsFileNameTemp = (string)Show(false);
+        personsFileName = (string)Show(false);
         // 创建项目
-        using (var processWorker = new StatusManager(projectFileNameTemp, personsFileNameTemp))
+        using (var processWorker = new StatusManager(projectFileName, personsFileName))
         {
             processWorker.CreateProject();
         }

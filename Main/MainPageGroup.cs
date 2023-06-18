@@ -121,9 +121,9 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
                     personsTemp.Add(nameTemp);
                 }
                 // 创建项目
-                using (Manager processWorker = new Manager(null, (string)fileNameTemp))
+                using (var processWorker = new PersonsManager((string)fileNameTemp))
                 {
-                    processWorker.PersonConfig = personsTemp.ToArray();
+                    processWorker.CreareProject(personsTemp.ToArray());
                 }
                 return null;
             }
@@ -151,17 +151,9 @@ public sealed class MainPageGroup : PageGroup, IConcreteShowable
         );
         Set("输入栏");
         personsFileName = (string)Show(false);
-        try
+        using (var processWorker = new PersonsManager(personsFileName))
         {
-            File.Delete("./Databases/" + personsFileName + ".persons");
-        }
-        catch (DirectoryNotFoundException)
-        {
-            throw new UnifyException("文件未找到", GetType());
-        }
-        catch (PathTooLongException)
-        {
-            throw new UnifyException("路径过长", GetType());
+            processWorker.DeleteProject();
         }
         Set(
             new string[] {

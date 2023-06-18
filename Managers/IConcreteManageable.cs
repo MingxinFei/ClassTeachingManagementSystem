@@ -7,9 +7,14 @@ namespace CTMS.Managers;
 internal interface IConcreteManageable
 {
     /// <summary>
-    /// 创建一个项目配置文件
+    /// 创建项目
     /// </summary>
     void CreateProject();
+
+    /// <summary>
+    /// 删除项目
+    /// </summary>
+    void DeleteProject();
 
     /// <summary>
     /// 检查项目配置文件是否格式正确

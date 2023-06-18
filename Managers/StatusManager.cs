@@ -7,7 +7,7 @@ namespace CTMS.Managers;
 /// 作业管理器
 /// </summary>
 [Kind("作业管理器")]
-public class StatusManager : Manager, IConcreteManageable
+public class StatusManager : ProjectManager, IConcreteManageable
 {
     /// <summary>
     /// 构造函数

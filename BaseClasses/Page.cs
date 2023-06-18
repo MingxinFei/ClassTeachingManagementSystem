@@ -133,7 +133,7 @@ public class Page : UnifyObject, IDisposable
     /// <param name="isGetChar">是否仅获取字符</param>
     /// <returns>获取输入</returns>
     /// <exception cref="UnifyException"></exception>
-    public object? Show(bool isGetChar = true)
+    public dynamic Show(bool isGetChar = true)
     {
         Check(texts);
         Check(inputText);

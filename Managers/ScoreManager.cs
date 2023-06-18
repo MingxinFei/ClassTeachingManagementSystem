@@ -7,7 +7,7 @@ namespace CTMS.Managers;
 /// 成绩管理器
 /// </summary>
 [Kind("成绩管理器")]
-public class ScoreManager : Manager, IConcreteManageable
+public class ScoreManager : ProjectManager, IConcreteManageable
 {
     /// <summary>
     /// 构造函数

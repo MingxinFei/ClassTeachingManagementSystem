@@ -103,7 +103,7 @@ public class PageEx : Page
     /// 普通页面所使用的委托
     /// </summary>
     /// <param name="datas">输入数据</param>
-    public delegate object Processor(object datas);
+    public delegate object Processor(dynamic datas);
 
     /// <summary>
     /// 多分支页面所使用的委托

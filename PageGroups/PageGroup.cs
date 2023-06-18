@@ -96,7 +96,7 @@ public abstract class PageGroup : PageEx
     /// <exception cref="UnifyException"></exception>
     protected virtual void DeleteProject()
     {
-        using (var processWorker = new Manager(projectFileName, personsFileName))
+        using (var processWorker = new ProjectManager(projectFileName, personsFileName))
         {
             processWorker.DeleteProject();
         }
